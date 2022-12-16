@@ -14,17 +14,30 @@
                                     <v-form v-on:submit.prevent="changewindow">
                                        <v-text-field 
                                           v-model="email" 
+                                          :rules="emailRules"
                                           label="Email" 
                                           autocomplete="false" 
                                           class="mt-10"
+                                          required
                                        ></v-text-field>
                                        <v-text-field 
                                           v-model="password" 
                                           label="Senha" 
                                           autocomplete="false" 
                                           class="mt-10"
-                                          type="password"
+                                          :type="passtype"
+                                          append-icon="mdi-eye"
+                                          @click:append="changepassvisibility"
+                                          required
                                        ></v-text-field>
+                                       <v-card-actions>
+                                          <v-icon
+                                             large
+                                             @click="passvisibility"
+                                          >
+                                             mdi-visibility
+                                          </v-icon>
+                                       </v-card-actions>
                                        <v-row class="justify-center align-center mt-6">
                                           <v-btn
                                              color="success"
@@ -101,11 +114,21 @@
                                           label="Senha" 
                                           autocomplete="false" 
                                           class="mt-10"
-                                          type="password"
+                                          :type="passtype"
+                                          append-icon="mdi-eye"
+                                          @click:append="changepassvisibility"
+                                          required
+                                       ></v-text-field>
+                                       <v-text-field 
+                                          v-model="confirmpassword" 
+                                          label="Confirmação de Senha" 
+                                          autocomplete="false" 
+                                          class="mt-10"
+                                          :type="passtype"
                                        ></v-text-field>
                                        <v-btn
                                           color="sucess"
-                                          @click="login"
+                                          @click="register"
                                           class="mt-8"
                                        >
                                           Cadastrar
@@ -130,8 +153,18 @@
       data: () => ({
       step: 1,
       valid: false,
+      name: '',
+      nameRules: [
+        v => !!v || 'Name is required',
+        v => v.length <= 10 || 'Name must be less than 10 characters'
+      ],
       email:'',
+      emailRules: [ 
+        v => !v || /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) || 'Padrão de E-Mail não valido!'
+      ],
       password:'',
+      passtype:'password',
+
 
       }),
       props: {
@@ -142,6 +175,7 @@
             alert('confirmado');
          },
          changewindow() {
+            this.resetchanges();
             if(this.step == 1)
             {
                this.step = 2;
@@ -149,6 +183,15 @@
             {
                this.step =1;
             }
+         },
+         changepassvisibility() {
+            this.passtype == 'password'? this.passtype='text': this.passtype='password';
+         },
+         resetchanges() {
+            this.email ='';
+            this.name = '';
+            this.password = '';
+            this.passtype = 'password';
          }
       } 
       
