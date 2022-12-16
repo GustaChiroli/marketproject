@@ -7,6 +7,9 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use App\Models\Profile;
+use Exception;
+use Illuminate\Support\Facades\DB;
 
 class User extends Authenticatable
 {
@@ -21,6 +24,9 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'status',
+        'profile_id',
+        'activation_token'
     ];
 
     /**
@@ -41,4 +47,46 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public $incrementing = true;
+     /**
+     * The "booted" method of the model.
+     *
+     * @return void
+     */
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($user) {
+            self::verifyEmail($user);
+        });
+
+        static::updated(function ($user) {
+            self::verifyEmail($user);
+        });
+    }
+
+    static public function getFieldError($queryResult, $params)
+    {
+        return array_uintersect_uassoc((array)$queryResult, $params, "strcasecmp", "strcasecmp");
+    }
+
+    static public function verifyEmail(User $user) 
+    {
+        $customWhere = $user->id 
+            ? sprintf("email = '%s' AND id NOT IN(%s)", $user->email, $user->id)
+            : sprintf("email = '%s'", $user->email);
+
+        $verify = DB::table('users')->whereRaw($customWhere)->first() ?? false;
+
+        if ($verify) {
+            throw new Exception('E-mail already in use', 1);
+        }
+    }
+
+    public function profile()
+    {
+        return $this->hasOne(Profile::class, 'id', 'profile_id');
+    }
 }
