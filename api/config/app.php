@@ -195,6 +195,9 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
 
+        // send email's using queue
+        Illuminate\Notifications\NotificationServiceProvider::class
+
     ],
 
     /*
