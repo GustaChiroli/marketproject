@@ -11,7 +11,7 @@
                               <h1 class="text-center mb-7">Login</h1>
                               <v-row class="d-flex justify-center align-center">
                                  <v-col cols="12" sm="8">
-                                    <v-form v-on:submit.prevent="changewindow">
+                                    <v-form v-on:submit.prevent="changeWindow">
                                        <v-text-field 
                                           v-model="email" 
                                           :rules="emailRules"
@@ -25,9 +25,9 @@
                                           label="Senha" 
                                           autocomplete="false" 
                                           class="mt-10"
-                                          :type="passtype"
+                                          :type="passType"
                                           append-icon="mdi-eye"
-                                          @click:append="changepassvisibility"
+                                          @click:append="changePassVisibility"
                                           required
                                        ></v-text-field>
                                        <v-card-actions>
@@ -46,7 +46,7 @@
                                              Logar
                                           </v-btn>
                                           <span
-                                             @click="changewindow"
+                                             @click="changeWindow"
                                              class="ml-10 registerspan"
                                           >
                                              Faça agora o seu cadastro
@@ -112,27 +112,26 @@
                                           required
                                        ></v-text-field>
                                        <v-text-field 
-                                          v-model="password" 
                                           label="Senha" 
+                                          v-model="password" 
                                           :rules="passwordRules"
-                                          autocomplete="false" 
                                           class="mt-10"
-                                          :type="passtype"
+                                          :type="passType"
                                           append-icon="mdi-eye"
-                                          @click:append="changepassvisibility"
+                                          @click:append="changePassVisibility"
                                           required
                                        ></v-text-field>
                                        <v-text-field 
-                                          v-model="confirmationPassword" 
                                           label="Confirmação de Senha" 
-                                          :rules="confirmationPasswordRules"
-                                          autocomplete="false" 
+                                          v-model="confirmationPassword" 
+                                          :rules="[isPasswordMatch]" 
                                           class="mt-10"
-                                          :type="passtype"
+                                          :type="passType"
                                           append-icon="mdi-eye"
-                                          @click:append="changepassvisibility"
+                                          @click:append="changePassVisibility"
                                           required
                                        ></v-text-field>
+                                       <v-spacer></v-spacer>
                                        <v-btn
                                           color="sucess"
                                           @click="register"
@@ -155,31 +154,24 @@
 </template>
 
 <script>
+import UserModel from '../models/UserModel'
 
    export default {
       data: () => ({
       step: 1,
       valid: false,
-      name: '',
-      nameRules: [
-         v => !!v || 'Name is required',
-         v => v.length <= 10 || 'Name must be less than 10 characters'
-      ],
       email:'',
       emailRules: [ 
          v => !v || /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) || 'Padrão de E-Mail não valido!'
       ],
       password:'',
-      confirmationPassword:'',
       passwordRules: [
          v => !!v || 'Password is required',
          v => !v || /\d/.test(v) || 'Password must have number',
          v => v.length > 9 || 'Password must have minimum 9 chars' ,
       ],
-      confirmationPasswordRules: [
-         v=> !v || v === this.password || 'Password must match'
-      ],
-      passtype:'password',
+      confirmationPassword:'',
+      passType:'password',
 
 
       }),
@@ -187,11 +179,18 @@
          source: String
       },
       methods: {
+         async register() {
+            this.UserModel.email = this.email;
+            this.UserModel.password = this.password;
+
+            this.resetChanges();
+         },
          login() {
             alert('confirmado');
+            this.resetChanges();
          },
-         changewindow() {
-            this.resetchanges();
+         changeWindow() {
+            this.resetChanges();
             if(this.step == 1)
             {
                this.step = 2;
@@ -200,17 +199,20 @@
                this.step =1;
             }
          },
-         changepassvisibility() {
-            this.passtype == 'password'? this.passtype='text': this.passtype='password';
+         changePassVisibility() {
+            this.passType == 'password'? this.passType='text': this.passType='password';
          },
-         resetchanges() {
+         resetChanges() {
             this.email ='';
-            this.name = '';
             this.password = '';
-            this.passtype = 'password';
+            this.confirmationPassword = '';
+            this.passType = 'password';
          }
       },
       computed: {
+         isPasswordMatch() {
+            return this.password === this.confirmationPassword || 'Password must match'
+         },
       }
 
       
