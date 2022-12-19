@@ -108,6 +108,7 @@
                                           label="Email" 
                                           autocomplete="false" 
                                           class="mt-10"
+                                          required
                                        ></v-text-field>
                                        <v-text-field 
                                           v-model="password" 
@@ -125,6 +126,9 @@
                                           autocomplete="false" 
                                           class="mt-10"
                                           :type="passtype"
+                                          append-icon="mdi-eye"
+                                          @click:append="changepassvisibility"
+                                          required
                                        ></v-text-field>
                                        <v-btn
                                           color="sucess"
