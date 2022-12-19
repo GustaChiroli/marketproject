@@ -106,6 +106,7 @@
                                        <v-text-field 
                                           v-model="email" 
                                           label="Email" 
+                                          :rules="emailRules"
                                           autocomplete="false" 
                                           class="mt-10"
                                           required
@@ -113,6 +114,7 @@
                                        <v-text-field 
                                           v-model="password" 
                                           label="Senha" 
+                                          :rules="passwordRules"
                                           autocomplete="false" 
                                           class="mt-10"
                                           :type="passtype"
@@ -121,8 +123,9 @@
                                           required
                                        ></v-text-field>
                                        <v-text-field 
-                                          v-model="confirmpassword" 
+                                          v-model="confirmationPassword" 
                                           label="Confirmação de Senha" 
+                                          :rules="confirmationPasswordRules"
                                           autocomplete="false" 
                                           class="mt-10"
                                           :type="passtype"
@@ -159,14 +162,23 @@
       valid: false,
       name: '',
       nameRules: [
-        v => !!v || 'Name is required',
-        v => v.length <= 10 || 'Name must be less than 10 characters'
+         v => !!v || 'Name is required',
+         v => v.length <= 10 || 'Name must be less than 10 characters'
       ],
       email:'',
       emailRules: [ 
-        v => !v || /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) || 'Padrão de E-Mail não valido!'
+         v => !v || /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) || 'Padrão de E-Mail não valido!'
       ],
       password:'',
+      confirmationPassword:'',
+      passwordRules: [
+         v => !!v || 'Password is required',
+         v => !v || /\d/.test(v) || 'Password must have number',
+         v => v.length > 9 || 'Password must have minimum 9 chars' ,
+      ],
+      confirmationPasswordRules: [
+         v=> !v || v === this.password || 'Password must match'
+      ],
       passtype:'password',
 
 
@@ -197,7 +209,10 @@
             this.password = '';
             this.passtype = 'password';
          }
-      } 
+      },
+      computed: {
+      }
+
       
    }
    
