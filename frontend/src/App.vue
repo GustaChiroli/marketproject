@@ -1,10 +1,11 @@
 <template>
   <v-app>
-    <v-main>
-      <nav v-if="haveNoNav">
-        <router-link :to="{ name: 'home' }">Home</router-link> |
+    <v-main class="justify-center">
+      <nav class="my-3 d-flex justify-space-around">
+        |<router-link :to="{ name: 'home' }">Home</router-link> |
         <router-link :to="{ name: 'login' }">Login</router-link> |
-        <router-link :to="{ name: 'pagenotfound' }">nf</router-link>
+        <router-link :to="{ name: 'dashboard' }">Dashboard</router-link> |
+        <router-link :to="{ name: 'pagenotfound' }">nf</router-link> |
       </nav>
       <router-view/>
     </v-main>
@@ -28,8 +29,9 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scopped>
 body {
   height: 100vh;
+
 }
 </style>

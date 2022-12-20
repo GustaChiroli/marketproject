@@ -180,10 +180,10 @@ import UserModel from '../models/UserModel'
       },
       methods: {
          async register() {
-            this.UserModel.email = this.email;
-            this.UserModel.password = this.password;
+            
 
             this.resetChanges();
+            alert('teste');
          },
          login() {
             alert('confirmado');
