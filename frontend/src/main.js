@@ -22,3 +22,4 @@ const app = createApp(App)
 registerPlugins(app)
 
 app.use(router).mount('#app')
+
